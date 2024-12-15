@@ -38,4 +38,12 @@ app.use(
   })
 );
 
+// Routes
+
+import userRouter from './routes/user.routes.js'
+import fileRouter from './routes/file.routes.js'
+
+app.use("/api/v1/users", userRouter)
+app.use("/api/v1/file", fileRouter)
+
 export { app };
