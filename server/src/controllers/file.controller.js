@@ -3,10 +3,14 @@ import {
   uploadOnCloudinary,
   deleteFromCloudinary,
 } from "../utils/cloudinary.config.js";
+import * as PDFJS from 'pdfjs-dist/legacy/build/pdf.js';
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import Path from "path";
+import { getEmbeddings } from "../utils/gemini.config.js";
+
+
 export const uploadResource = asyncHandler(async (req, res) => {
   const { file } = req;
   const localFilePath = file.path;
@@ -82,6 +86,61 @@ export const deleteResource = asyncHandler(async (req, res) => {
     throw new ApiError(
       500,
       error.message || "An error occurred while deleting the resource."
+    );
+  }
+});
+
+export const getEmbed=asyncHandler(async(req,res)=>{
+  const embedding = await getEmbeddings(req.body.text);
+  res.status(200).send(embedding);
+})
+
+export const processFile = asyncHandler(async (req, res) => {
+  const { fileId } = req.params;
+
+  if (!fileId) {
+    throw new ApiError(400, "File ID is required.");
+  }
+
+  try {
+    const file = await File.findById(fileId);
+    if (!file) {
+      throw new ApiError(404, "File not Found");
+    }
+    if (file.isProcessed == true) {
+      throw new ApiError(400, "File Already Processed");
+    }
+
+    let vectors = [];
+    let myFileData = await fetch(file.fileUrl);
+
+    if (myFileData.ok) {
+      let pdfDoc = await PDFJS.getDocument(await myFileData.arrayBuffer()).promise
+			const numPages = pdfDoc.numPages
+			for (let i = 0; i < numPages; i++) {
+				let page = await pdfDoc.getPage(i + 1)
+				let textContent = await page.getTextContent()
+				const text = textContent.items.map(item => item.str).join('');
+        console.log(text);
+				// 5. Get embeddings for each page
+				// const embedding = await getEmbeddings(text)
+
+				// // 6. push to vector array
+				// vectors.push({
+				// 	id: `page${i + 1}`,
+				// 	values: embedding,
+				// 	metadata: {
+				// 		pageNum: i + 1,
+				// 		text,
+				// 	},
+				// })
+			}
+    }
+    res.status(200).json({"nice":"nice"})
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error || "An error occurred while deleting the resource."
     );
   }
 });

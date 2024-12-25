@@ -35,7 +35,6 @@ const file = new Schema(
     vectorIndex: {
       type: String,
       maxLength: 100,
-      unique: true,
       required: false,
     },
   },
