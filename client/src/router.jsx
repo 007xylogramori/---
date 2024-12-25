@@ -4,6 +4,7 @@ import SignupPage from './pages/SignupPage';
 import DashboardLayout from './layouts/DashboardLayout';
 import AuthLayout from './layouts/AuthLayout';
 import ErrorPage from './pages/ErrorPage';
+import DashBoard from './pages/DashBoard';
 
 
 const router = createBrowserRouter([
@@ -13,7 +14,10 @@ const router = createBrowserRouter([
         element: <DashboardLayout />,
         errorElement:<ErrorPage/>,
         children: [
-           
+            {
+                path: 'account',
+                element: <DashBoard />,
+            },
         ],
     },
     {

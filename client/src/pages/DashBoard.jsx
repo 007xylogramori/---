@@ -1,29 +1,13 @@
-import axios from "axios";
+
 import React, { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import Book from "../components/Book";
 import Modal from "../components/Modal";
 
 const DashBoard = () => {
   const { user } = useOutletContext();
   const [wishlist,setWishlist]=useState([]);
   const [show, setShow] = useState(false);
-  useEffect(()=>{
-    const getWishList=async()=>{
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_URL}/books/wishlist`,
-          { withCredentials: true }
-        );
-        console.log(response);
-        setWishlist(response.data.data);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    getWishList();
-
-  },[])
+  
   return (
     <>
     {show && <Modal setShow={setShow}/>}
@@ -71,12 +55,7 @@ const DashBoard = () => {
       </div>
       <div className="text-gray-700 text-xl font-bold">MY WISHLIST</div>
       <div className="grid grid-cols-1 py-4 md:grid-cols-2 lg:grid-cols-6 gap-2">
-        {wishlist.length==0?"No Books Wishlisted":""}
-        {
-         wishlist.map((book)=>{
-            return <Book key={book._id} book={book}/>
-          })
-        }
+        
       </div>
     </div>
     </>

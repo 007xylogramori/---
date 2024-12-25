@@ -28,7 +28,7 @@ export const menuGroups = [
         </svg>
       ),
       label: "Books",
-      route: "/dashboard/books",
+      route: "/books",
     },
     
     {
@@ -52,7 +52,7 @@ export const menuGroups = [
         </svg>
       ),
       label: "Profile",
-      route: "/dashboard/account",
+      route: "/account",
     }
     
   ];
@@ -88,7 +88,7 @@ export const menuGroups = [
         </svg>
       ),
       label: "Add Book",
-      route: "/dashboard/books/create",
+      route: "/books/create",
     },
     
   ];
